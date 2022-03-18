@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.model.ForecastBy3h
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel>()
@@ -45,8 +46,16 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val forecast = forecastBy3hList[position]
-        holder.fullName.text = position.toString()
-        holder.description.text = forecast.humidity.toString()
+
+        val zoneDt = Date(forecast.dt *1000L)
+        val dayList = zoneDt.toString().split(" ")
+        val formatDate = "${dayList[2]} (${dayList[0]})"
+
+        holder.day.text = formatDate
+        holder.max.text = "%.1f℃".format(forecast.temp.average_max - 273.15)
+        holder.min.text = "%.1f℃".format(forecast.temp.average_min - 273.15)
+        holder.humidity.text = "${forecast.humidity.toInt()}%"
+        holder.wind.text = "${forecast.wind_speed}m/s"
         holder.itemView.setBackgroundColor(
             if (position % 2 == 0) {
                 Color.WHITE
@@ -62,6 +71,9 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
 }
 
 private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val fullName = itemView.findViewById<TextView>(R.id.fullName)
-    val description = itemView.findViewById<TextView>(R.id.description)
+    val day = itemView.findViewById<TextView>(R.id.day)
+    val max = itemView.findViewById<TextView>(R.id.max)
+    val min = itemView.findViewById<TextView>(R.id.min)
+    val humidity = itemView.findViewById<TextView>(R.id.humidity)
+    val wind = itemView.findViewById<TextView>(R.id.wind)
 }

@@ -20,7 +20,7 @@ data class Coord(
 )
 
 data class ForecastBy3h(
-    val dt: Int,
+    val dt: Long,
     val humidity: Double,
     val pressure: Double,
     val temp: Temp,
