@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="day"
+        android:textColor="#000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/max"/>
@@ -42,6 +43,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="humidity"
+        android:textColor="#000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/min"
         app:layout_constraintEnd_toStartOf="@id/wind" />
@@ -52,6 +54,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="wind"
+        android:textColor="#000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/humidity"
         app:layout_constraintEnd_toEndOf="parent" />

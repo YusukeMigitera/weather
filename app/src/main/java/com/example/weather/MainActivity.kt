@@ -1,6 +1,7 @@
 package com.example.weather
 
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.model.ForecastBy3h
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -44,12 +50,18 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
         return MyViewHolder(view)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val forecast = forecastBy3hList[position]
 
-        val zoneDt = Date(forecast.dt *1000L)
-        val dayList = zoneDt.toString().split(" ")
-        val formatDate = "${dayList[2]} (${dayList[0]})"
+//        val zoneDt = Date(forecast.dt *1000L)
+//        val dayList = zoneDt.toString().split(" ")
+//        val formatDate = "${dayList[2]} (${dayList[0]})"
+
+        val instant = Instant.ofEpochSecond(forecast.dt) // ofEpochSecond() 26
+        val fmt = DateTimeFormatter.ofPattern("dd(E)")
+        val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val formatDate = zone.format(fmt)
 
         holder.day.text = formatDate
         holder.max.text = "%.1f℃".format(forecast.temp.average_max - 273.15)
