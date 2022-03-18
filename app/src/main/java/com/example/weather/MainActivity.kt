@@ -49,7 +49,6 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
         return MyViewHolder(view)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val climate = climate30Days[position]
 
