@@ -1,7 +1,7 @@
 package com.example.weather
 
 import android.net.Uri
-import com.example.weather.model.Forecast
+import com.example.weather.model.Climate
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -16,7 +16,7 @@ class WeatherApi {
             .build()
     }
 
-    fun getForecast(): Forecast {
+    fun getClimate(): Climate {
         val uri = Uri.parse(API_ENDPOINT).buildUpon()
             .appendPath("climate")
             .appendPath("month")
@@ -28,6 +28,6 @@ class WeatherApi {
         val response = CLIENT.newCall(request).execute()
         val json = response.body?.string() ?: ""
 
-        return MOSHI.adapter(Forecast::class.java).fromJson(json)!!
+        return MOSHI.adapter(Climate::class.java).fromJson(json)!!
     }
 }

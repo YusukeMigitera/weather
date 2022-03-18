@@ -12,12 +12,11 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather.model.ForecastBy3h
+import com.example.weather.model.ClimateByDay
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel>()
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel.loadForecast() // 取得
+        viewModel.loadClimate() // 取得
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val adapter = MyAdapter()
@@ -33,9 +32,9 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val textView = findViewById<TextView>(R.id.textView)
-        viewModel.forecast.observe(this) {
-            textView.setText(viewModel.forecast.value?.cod)
-            adapter.forecastBy3hList = it.list
+        viewModel.climate.observe(this) {
+            textView.setText(viewModel.climate.value?.cod)
+            adapter.climate30Days = it.list
             adapter.notifyDataSetChanged()
         }
     }
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
 private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
 
-    var forecastBy3hList: List<ForecastBy3h> = emptyList()
+    var climate30Days: List<ClimateByDay> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
@@ -52,22 +51,22 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val forecast = forecastBy3hList[position]
+        val climate = climate30Days[position]
 
 //        val zoneDt = Date(forecast.dt *1000L)
 //        val dayList = zoneDt.toString().split(" ")
 //        val formatDate = "${dayList[2]} (${dayList[0]})"
 
-        val instant = Instant.ofEpochSecond(forecast.dt) // ofEpochSecond() 26
+        val instant = Instant.ofEpochSecond(climate.dt) // ofEpochSecond() 26
         val fmt = DateTimeFormatter.ofPattern("dd(E)")
         val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
         val formatDate = zone.format(fmt)
 
         holder.day.text = formatDate
-        holder.max.text = "%.1f℃".format(forecast.temp.average_max - 273.15)
-        holder.min.text = "%.1f℃".format(forecast.temp.average_min - 273.15)
-        holder.humidity.text = "${forecast.humidity.toInt()}%"
-        holder.wind.text = "${forecast.wind_speed}m/s"
+        holder.max.text = "%.1f℃".format(climate.temp.average_max - 273.15)
+        holder.min.text = "%.1f℃".format(climate.temp.average_min - 273.15)
+        holder.humidity.text = "${climate.humidity.toInt()}%"
+        holder.wind.text = "${climate.wind_speed}m/s"
         holder.itemView.setBackgroundColor(
             if (position % 2 == 0) {
                 Color.WHITE
@@ -78,7 +77,7 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return forecastBy3hList.size
+        return climate30Days.size
     }
 }
 
