@@ -2,35 +2,60 @@ package com.example.weather.model
 
 data class Forecast(
     val cod: String,
-    val city: City,
     val message: Double,
-    val list: List<ForecastBy3h>
-)
-
-data class City(
-    val id: Int,
-    val name: String,
-    val coord: Coord,
-    val country: String,
-)
-
-data class Coord(
-    val lon: Double,
-    val lat: Double
+    val cnt: Int,
+    val list: List<ForecastBy3h>,
+    val city: CityForecast
 )
 
 data class ForecastBy3h(
     val dt: Long,
-    val humidity: Double,
-    val pressure: Double,
-    val temp: Temp,
-    val wind_speed: Double
+    val main: Main,
+    val weather: List<Weather>,
+    val clouds: Clouds,
+    val wind: Wind,
+    val sys: Sys,
+    val dt_txt: String
 )
 
-data class Temp(
-    val average: Double,
-    val average_max: Double,
-    val average_min: Double,
-    val record_max: Double,
-    val record_min: Double
+data class Main(
+    val temp: Double,
+    val temp_mim: Double,
+    val temp_max: Double,
+    val pressure: Double,
+    val sea_level: Double,
+    val grnd_level: Double,
+    val humidity: Int,
+    val temp_kf: Double
+)
+
+data class Weather(
+    val id: Int,
+    val main: String,
+    val description: String,
+    val icon: String
+)
+
+data class Clouds(
+    val all: Int
+)
+
+data class Wind(
+    val speed: Double,
+    val deg: Double
+)
+
+data class Sys(
+    val pod: String
+)
+
+data class CityForecast(
+    val id: Int,
+    val name: String,
+    val coord: Coord,
+    val country: String,
+    val population: Int,
+    val timezone: Int,
+    val sunrise: Double,
+    val sunset: Double
 )
