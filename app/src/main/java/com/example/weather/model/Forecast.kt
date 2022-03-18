@@ -20,7 +20,7 @@ data class ForecastBy3h(
 
 data class Main(
     val temp: Double,
-    val temp_mim: Double,
+    val temp_min: Double,
     val temp_max: Double,
     val pressure: Double,
     val sea_level: Double,

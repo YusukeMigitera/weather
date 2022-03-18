@@ -35,7 +35,7 @@ class WeatherApi {
         val uri = Uri.parse(API_ENDPOINT).buildUpon()
             .appendPath("climate")
             .appendPath("month")
-            .appendQueryParameter("q", "San Francisco")
+            .appendQueryParameter("q", "Tokyo")
         val request = Request.Builder().url(uri.toString())
             .addHeader("x-rapidapi-key", "b60a4b9ff0mshff11b416225f2f7p1d1478jsn9e99bd91bca1")
             .addHeader("x-rapidapi-host", "community-open-weather-map.p.rapidapi.com")
