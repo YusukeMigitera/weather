@@ -9,14 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class WeatherApi {
-    companion object {
-        private const val API_ENDPOINT = "https://community-open-weather-map.p.rapidapi.com/"
-        private val CLIENT = OkHttpClient()
-        private val MOSHI = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
-
     fun getForecast(): Forecast {
         val uri = Uri.parse(API_ENDPOINT).buildUpon()
             .appendPath("forecast")
@@ -28,7 +20,7 @@ class WeatherApi {
         val response = CLIENT.newCall(request).execute()
         val json = response.body?.string() ?: ""
 
-        return MOSHI.adapter(Forecast::class.java).fromJson(json)!!
+        return MOSHI.adapter(Forecast::class.java).fromJson(json) ?: Forecast()
     }
 
     fun getClimate(): Climate {
@@ -44,5 +36,13 @@ class WeatherApi {
         val json = response.body?.string() ?: ""
 
         return MOSHI.adapter(Climate::class.java).fromJson(json)!!
+    }
+
+    companion object {
+        private const val API_ENDPOINT = "https://community-open-weather-map.p.rapidapi.com/"
+        private val CLIENT = OkHttpClient()
+        private val MOSHI = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
     }
 }

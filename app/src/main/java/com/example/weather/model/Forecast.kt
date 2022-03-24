@@ -1,11 +1,11 @@
 package com.example.weather.model
 
-data class Forecast(
-    val cod: String,
-    val message: Double,
-    val cnt: Int,
-    val list: List<ForecastBy3h>,
-    val city: CityForecast
+data class Forecast constructor(
+    val cod: String = "",
+    val message: Double = 0.0,
+    val cnt: Int = 0,
+    val list: MutableList<ForecastBy3h> = mutableListOf(),
+    val city: CityForecast? = null
 )
 
 data class ForecastBy3h(

@@ -1,9 +1,7 @@
 package com.example.weather
 
-import android.graphics.Bitmap
+import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,9 +13,8 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.model.ClimateByDay
+import com.example.weather.model.ForecastBy3h
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import java.lang.Exception
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -37,8 +34,16 @@ class MainActivity : AppCompatActivity() {
         val weather = findViewById<TextView>(R.id.weather)
         val temperature = findViewById<TextView>(R.id.temperature)
 
+        val horizontalRecyclerView = findViewById<RecyclerView>(R.id.horizontalScroll)
+        val horizontalAdapter = HorizontalAdapter()
+        horizontalRecyclerView.adapter = horizontalAdapter
+        val lm = LinearLayoutManager(this)
+        lm.orientation = LinearLayoutManager.HORIZONTAL
+        horizontalRecyclerView.layoutManager = lm
+
         viewModel.forecast.observe(this) {
-            val instant = Instant.ofEpochSecond(viewModel.forecast.value?.list!![0].dt) // ofEpochSecond() 26
+            val instant =
+                Instant.ofEpochSecond(viewModel.forecast.value?.list!![0].dt) // ofEpochSecond() 26
             val fmt = DateTimeFormatter.ofPattern("MM/dd(E) HH:mm")
             val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
             val formatDate = zone.format(fmt)
@@ -46,9 +51,15 @@ class MainActivity : AppCompatActivity() {
             val temp = "%.1f℃".format(viewModel.forecast.value?.list!![0].main.temp - 273.15)
 
             datetime.setText(formatDate)
-            Picasso.get().load("https://openweathermap.org/img/w/${viewModel.forecast.value?.list!![0].weather[0].icon}.png").into(icon)
+            Picasso.get()
+                .load("https://openweathermap.org/img/w/${viewModel.forecast.value?.list!![0].weather[0].icon}.png")
+                .into(icon)
             weather.setText(viewModel.forecast.value?.list!![0].weather[0].main)
             temperature.setText(temp)
+
+            it.list.removeAt(0)
+            horizontalAdapter.forecasts5Days = it.list
+            horizontalAdapter.notifyItemRangeChanged(0, horizontalAdapter.itemCount)
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
@@ -62,7 +73,50 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
+private class HorizontalAdapter : RecyclerView.Adapter<HorizontalViewHolder>() {
+
+    var forecasts5Days: List<ForecastBy3h> = emptyList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorizontalViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.horizontal_item, parent, false)
+        return HorizontalViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: HorizontalViewHolder, position: Int) {
+        val forecast = forecasts5Days[position]
+
+        val instant = Instant.ofEpochSecond(forecast.dt) // ofEpochSecond() 26
+        val fmtDate = DateTimeFormatter.ofPattern("dd(E)")
+        val fmtTime = DateTimeFormatter.ofPattern("HH:mm")
+        val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val formatDate = zone.format(fmtDate)
+        val formatTime = zone.format(fmtTime)
+
+        holder.date.text = formatDate
+        holder.time.text = formatTime
+        holder.temp.text = "%.1f℃".format(forecast.main.temp - 273.15)
+        Picasso.get().load("https://openweathermap.org/img/w/${forecast.weather[0].icon}.png")
+            .into(holder.icon)
+        holder.humidity.text = forecast.main.humidity.toString() + "%"
+        holder.wind.text = "${forecast.wind.speed}m/s"
+    }
+
+    override fun getItemCount(): Int {
+        return forecasts5Days.size
+    }
+}
+
+private class HorizontalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val date = itemView.findViewById<TextView>(R.id.date)
+    val time = itemView.findViewById<TextView>(R.id.time)
+    val temp = itemView.findViewById<TextView>(R.id.temp)
+    val icon = itemView.findViewById<ImageView>(R.id.icon)
+    val humidity = itemView.findViewById<TextView>(R.id.humidity)
+    val wind = itemView.findViewById<TextView>(R.id.wind)
+}
+
+private class MyAdapter : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     var climate30Days: List<ClimateByDay> = emptyList()
 
@@ -72,40 +126,44 @@ private class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val climate = climate30Days[position]
+        holder.set(climate30Days[position])
 
 //        val zoneDt = Date(forecast.dt *1000L)
 //        val dayList = zoneDt.toString().split(" ")
 //        val formatDate = "${dayList[2]} (${dayList[0]})"
 
-        val instant = Instant.ofEpochSecond(climate.dt) // ofEpochSecond() 26
-        val fmt = DateTimeFormatter.ofPattern("dd(E)")
-        val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
-        val formatDate = zone.format(fmt)
 
-        holder.day.text = formatDate
-        holder.max.text = "%.1f℃".format(climate.temp.average_max - 273.15)
-        holder.min.text = "%.1f℃".format(climate.temp.average_min - 273.15)
-        holder.humidity.text = "${climate.humidity.toInt()}%"
-        holder.wind.text = "${climate.wind_speed}m/s"
-        holder.itemView.setBackgroundColor(
-            if (position % 2 == 0) {
-                Color.WHITE
-            } else {
-                Color.LTGRAY
-            }
-        )
     }
 
-    override fun getItemCount(): Int {
-        return climate30Days.size
-    }
-}
+    override fun getItemCount(): Int = climate30Days.size
 
-private class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val day = itemView.findViewById<TextView>(R.id.day)
-    val max = itemView.findViewById<TextView>(R.id.max)
-    val min = itemView.findViewById<TextView>(R.id.min)
-    val humidity = itemView.findViewById<TextView>(R.id.humidity)
-    val wind = itemView.findViewById<TextView>(R.id.wind)
+
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val day = itemView.findViewById<TextView>(R.id.day)
+        val max = itemView.findViewById<TextView>(R.id.max)
+        val min = itemView.findViewById<TextView>(R.id.min)
+        val humidity = itemView.findViewById<TextView>(R.id.humidity)
+        val wind = itemView.findViewById<TextView>(R.id.wind)
+
+        fun set(climate: ClimateByDay) {
+            val instant = Instant.ofEpochSecond(climate.dt) // ofEpochSecond() 26
+            val fmt = DateTimeFormatter.ofPattern("dd(E)")
+            val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+            val formatDate = zone.format(fmt)
+            val humi = "${climate.humidity.toInt()}%"
+
+            day.text = formatDate
+            max.text = "%.1f℃".format(climate.temp.average_max - 273.15)
+            min.text = "%.1f℃".format(climate.temp.average_min - 273.15)
+            humidity.text = String.format("%d%s", climate.humidity.toInt(),"%")
+            wind.text = "${climate.wind_speed}m/s"
+            itemView.setBackgroundColor(
+                if (position % 2 == 0) {
+                    Color.LTGRAY
+                } else {
+                    Color.WHITE
+                }
+            )
+        }
+    }
 }
