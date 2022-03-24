@@ -12,7 +12,7 @@ class WeatherApi {
     fun getForecast(): Forecast {
         val uri = Uri.parse(API_ENDPOINT).buildUpon()
             .appendPath("forecast")
-            .appendQueryParameter("q", "Tokyo")
+            .appendQueryParameter("q", TOKYO)
         val request = Request.Builder().url(uri.toString())
             .addHeader("x-rapidapi-key", API_KEY)
             .addHeader("x-rapidapi-host", API_HOST)
@@ -35,7 +35,7 @@ class WeatherApi {
         val response = CLIENT.newCall(request).execute()
         val json = response.body?.string() ?: ""
 
-        return MOSHI.adapter(Climate::class.java).fromJson(json)!!
+        return MOSHI.adapter(Climate::class.java).fromJson(json) ?: Climate()
     }
 
     companion object {
