@@ -43,12 +43,12 @@ class MainActivity : AppCompatActivity() {
 
             val temp = "%.1f℃".format(viewModel.forecast.value?.list!![0].main.temp - 273.15)
 
-            datetime.setText(formatDate)
+            datetime.text = formatDate
             Picasso.get()
                 .load("https://openweathermap.org/img/w/${viewModel.forecast.value?.list!![0].weather[0].icon}.png")
                 .into(icon)
-            weather.setText(viewModel.forecast.value?.list!![0].weather[0].main)
-            temperature.setText(temp)
+            weather.text = viewModel.forecast.value?.list!![0].weather[0].main
+            temperature.text = temp
 
             it.list.removeAt(0)
             horizontalAdapter.forecasts5Days = it.list
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.climate.observe(this) {
             adapter.climate30Days = it.list
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRangeChanged(0, adapter.itemCount)
         }
     }
 }
