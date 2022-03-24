@@ -14,8 +14,8 @@ class WeatherApi {
             .appendPath("forecast")
             .appendQueryParameter("q", "Tokyo")
         val request = Request.Builder().url(uri.toString())
-            .addHeader("x-rapidapi-key", "b60a4b9ff0mshff11b416225f2f7p1d1478jsn9e99bd91bca1")
-            .addHeader("x-rapidapi-host", "community-open-weather-map.p.rapidapi.com")
+            .addHeader("x-rapidapi-key", API_KEY)
+            .addHeader("x-rapidapi-host", API_HOST)
             .build()
         val response = CLIENT.newCall(request).execute()
         val json = response.body?.string() ?: ""
@@ -29,8 +29,8 @@ class WeatherApi {
             .appendPath("month")
             .appendQueryParameter("q", "Tokyo")
         val request = Request.Builder().url(uri.toString())
-            .addHeader("x-rapidapi-key", "b60a4b9ff0mshff11b416225f2f7p1d1478jsn9e99bd91bca1")
-            .addHeader("x-rapidapi-host", "community-open-weather-map.p.rapidapi.com")
+            .addHeader("x-rapidapi-key", API_KEY)
+            .addHeader("x-rapidapi-host", API_HOST)
             .build()
         val response = CLIENT.newCall(request).execute()
         val json = response.body?.string() ?: ""
@@ -40,6 +40,8 @@ class WeatherApi {
 
     companion object {
         private const val API_ENDPOINT = "https://community-open-weather-map.p.rapidapi.com/"
+        private const val API_KEY = "b60a4b9ff0mshff11b416225f2f7p1d1478jsn9e99bd91bca1"
+        private const val API_HOST = "community-open-weather-map.p.rapidapi.com"
         private val CLIENT = OkHttpClient()
         private val MOSHI = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
