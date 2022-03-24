@@ -1,0 +1,12 @@
+package com.example.weather.model
+
+data class CityForecast(
+    val id: Int,
+    val name: String,
+    val coord: Coord,
+    val country: String,
+    val population: Int,
+    val timezone: Int,
+    val sunrise: Double,
+    val sunset: Double
+)
