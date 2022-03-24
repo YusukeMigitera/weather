@@ -35,11 +35,11 @@ class HorizontalAdapter : RecyclerView.Adapter<HorizontalAdapter.HorizontalViewH
 
         holder.date.text = formatDate
         holder.time.text = formatTime
-        holder.temp.text = "%.1f℃".format(forecast.main.temp - 273.15)
+        holder.temp.text = String.format("%.1f℃", forecast.main.temp - 273.15)
         Picasso.get().load("https://openweathermap.org/img/w/${forecast.weather[0].icon}.png")
             .into(holder.icon)
-        holder.humidity.text = forecast.main.humidity.toString() + "%"
-        holder.wind.text = "${forecast.wind.speed}m/s"
+        holder.humidity.text = String.format("%d%s", forecast.main.humidity,"%")
+        holder.wind.text = String.format("%.2f m/s", forecast.wind.speed)
     }
 
     override fun getItemCount(): Int {

@@ -46,13 +46,12 @@ class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.VerticalViewHolder>
             val fmt = DateTimeFormatter.ofPattern("dd(E)")
             val zone = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
             val formatDate = zone.format(fmt)
-            val humi = "${climate.humidity.toInt()}%"
 
             day.text = formatDate
-            max.text = "%.1f℃".format(climate.temp.average_max - 273.15)
-            min.text = "%.1f℃".format(climate.temp.average_min - 273.15)
+            max.text = String.format("%.1f℃", climate.temp.average_max - 273.15)
+            min.text = String.format("%.1f℃", climate.temp.average_min - 273.15)
             humidity.text = String.format("%d%s", climate.humidity.toInt(),"%")
-            wind.text = "${climate.wind_speed}m/s"
+            wind.text = String.format("%.2f m/s", climate.wind_speed)
             itemView.setBackgroundColor(
                 if (position % 2 == 0) {
                     Color.LTGRAY
