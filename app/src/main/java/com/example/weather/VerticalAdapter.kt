@@ -35,11 +35,11 @@ class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.VerticalViewHolder>
 
 
     class VerticalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val day = itemView.findViewById<TextView>(R.id.day)
-        val max = itemView.findViewById<TextView>(R.id.max)
-        val min = itemView.findViewById<TextView>(R.id.min)
-        val humidity = itemView.findViewById<TextView>(R.id.humidity)
-        val wind = itemView.findViewById<TextView>(R.id.wind)
+        private val day = itemView.findViewById<TextView>(R.id.day)
+        private val max = itemView.findViewById<TextView>(R.id.max)
+        private val min = itemView.findViewById<TextView>(R.id.min)
+        private val humidity = itemView.findViewById<TextView>(R.id.humidity)
+        private val wind = itemView.findViewById<TextView>(R.id.wind)
 
         fun set(climate: ClimateByDay) {
             val instant = Instant.ofEpochSecond(climate.dt) // ofEpochSecond() 26
