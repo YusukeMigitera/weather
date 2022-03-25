@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
             it.list.removeAt(0)
             horizontalAdapter.forecasts5Days = it.list
-            horizontalAdapter.notifyItemRangeChanged(0, horizontalAdapter.itemCount)
+            horizontalAdapter.notifyItemRangeInserted(0, horizontalAdapter.itemCount) // Insert 追加 Changed 入れ替え
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.climate.observe(this) {
             adapter.climate30Days = it.list
-            adapter.notifyItemRangeChanged(0, adapter.itemCount)
+            adapter.notifyItemRangeInserted(0, adapter.itemCount) // Insert 追加 Changed 入れ替え
         }
     }
 }
