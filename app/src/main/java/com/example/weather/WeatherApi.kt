@@ -10,7 +10,7 @@ import okhttp3.Request
 
 class WeatherApi {
     fun getForecast(): Forecast {
-        val uri = Uri.parse(API_ENDPOINT).buildUpon()
+        val uri = Uri.parse(API_ENDPOINT1).buildUpon()
             .appendPath("forecast")
             .appendQueryParameter("q", TOKYO)
         val request = Request.Builder().url(uri.toString())
@@ -24,7 +24,7 @@ class WeatherApi {
     }
 
     fun getClimate(): Climate {
-        val uri = Uri.parse(API_ENDPOINT).buildUpon()
+        val uri = Uri.parse(API_ENDPOINT0).buildUpon()
             .appendPath("climate")
             .appendPath("month")
             .appendQueryParameter("q", TOKYO)
@@ -39,7 +39,8 @@ class WeatherApi {
     }
 
     companion object {
-        private const val API_ENDPOINT = "https://community-open-weather-map.p.rapidapi.com/"
+        private const val API_ENDPOINT0 = "https://community-open-weather-map.p.rapidapi.com/"
+        private const val API_ENDPOINT1 = "http://10.0.2.2:8080/"
         private const val API_KEY = "b60a4b9ff0mshff11b416225f2f7p1d1478jsn9e99bd91bca1"
         private const val API_HOST = "community-open-weather-map.p.rapidapi.com"
         private const val TOKYO = "Tokyo"
